@@ -1,0 +1,20 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="500"
+             x:Class="AvaloniaCodeRunner.CodeExecutionView">
+    <Grid RowDefinitions="20, 300, 50, 20, 100" Margin="1">
+        <Label Grid.Row="0">Code:</Label>
+        <TextBox x:Name="Code" Grid.Row="1" AcceptsReturn="True" TextWrapping="Wrap" />
+        <StackPanel Grid.Row="2" Orientation="Horizontal" VerticalAlignment="Center">
+            <Label  Margin="5">Parameter:</Label>
+            <TextBox Name="Parameter" Width="150" Margin="5"></TextBox>
+            <Button Click="Button_OnClick" Grid.Row="2" HorizontalAlignment="Center">Execute</Button>
+            
+        </StackPanel>
+        
+        <Label Grid.Row="3">Results:</Label>
+        <TextBox IsEnabled="False" x:Name="Results" Grid.Row="4" AcceptsReturn="True" TextWrapping="Wrap" />
+    </Grid>
+</UserControl>
