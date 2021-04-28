@@ -2,16 +2,23 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="500"
+             mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="530"
              x:Class="AvaloniaCodeRunner.CodeExecutionView">
-    <Grid RowDefinitions="20, 300, 50, 20, 100" Margin="1">
+    <Grid RowDefinitions="20, 300, 80, 20, 100" Margin="1">
         <Label Grid.Row="0">Code:</Label>
         <TextBox x:Name="Code" Grid.Row="1" AcceptsReturn="True" TextWrapping="Wrap" />
         <StackPanel Grid.Row="2" Orientation="Horizontal" VerticalAlignment="Center">
-            <Label  Margin="5">Parameter:</Label>
-            <TextBox Name="Parameter" Width="150" Margin="5"></TextBox>
-            <Button Click="Button_OnClick" Grid.Row="2" HorizontalAlignment="Center">Execute</Button>
-            
+            <StackPanel Orientation="Vertical">
+                <StackPanel Orientation="Horizontal">
+                    <Label Width="160"  Margin="5">Method Parameter:</Label>
+                    <TextBox Name="MethodParameter" Width="100" Margin="5"></TextBox>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Label  Margin="5">Constructor Parameter:</Label>
+                    <TextBox Name="ConstructorParameter" Width="100" Margin="5"></TextBox>
+                </StackPanel>
+            </StackPanel>
+            <Button Click="Button_OnClick" HorizontalAlignment="Center">Execute</Button>
         </StackPanel>
         
         <Label Grid.Row="3">Results:</Label>

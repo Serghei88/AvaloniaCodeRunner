@@ -7,18 +7,24 @@ namespace AvaloniaCodeRunner
     public class CodeExecutionView : UserControl
     {
         string defaultCode = @"
-                using System;
+using System;
+namespace AvaloniaCodeRunner
+{
+    public class Runnable: IRunnable
+    {
+        private string parameter;
 
-                namespace AvaloniaCodeRunner
-                {
-                    public class Runnable: IRunnable
-                    {
-                        public string Run(string message)
-                        {
-                            return message + ""test"";
-                        }
-                    }
-                }";
+        public Runnable(string p)
+        {
+            parameter = p;
+        }
+
+        public string Run(string message)
+        {
+            return message + parameter;
+        }
+    }
+}";
         public CodeExecutionView()
         {
             InitializeComponent();
@@ -35,7 +41,8 @@ namespace AvaloniaCodeRunner
         {
             var codeText = this.FindControl<TextBox>("Code").Text;
             var results = this.FindControl<TextBox>("Results");
-            var parameter = this.FindControl<TextBox>("Parameter");
+            var methodParameter = this.FindControl<TextBox>("MethodParameter");
+            var constructorParameter = this.FindControl<TextBox>("ConstructorParameter");
 
             var compilationResult = CodeRunner.Compile(string.IsNullOrEmpty(codeText) ? defaultCode : codeText, typeof(IRunnable));
             
@@ -47,8 +54,8 @@ namespace AvaloniaCodeRunner
             {
                 var executionResult = CodeRunner.Run(
                     compilationResult.Assembly,
-                    typeof(IRunnable), null,
-                    new object[] {parameter.Text});
+                    typeof(IRunnable), new []{ constructorParameter.Text },
+                    new object[] {methodParameter.Text});
                 results.Text = (string) executionResult!;
             }
         }
