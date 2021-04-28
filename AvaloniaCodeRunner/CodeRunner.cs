@@ -11,7 +11,7 @@ namespace AvaloniaCodeRunner
 {
     public static class CodeRunner
     {
-        public static CodeExecutionResult RunCode(string code, Type runnableType, object[] parameters)
+        public static CodeCompilationResult Compile(string code, Type runnableType)
         {
             SyntaxTree syntaxTree = CSharpSyntaxTree.ParseText(code);
 
@@ -42,35 +42,40 @@ namespace AvaloniaCodeRunner
                 string errorText = failures.Aggregate("", (current, diagnostic)
                     => current + (($"{diagnostic.Id}: {diagnostic.GetMessage()}") + Environment.NewLine));
 
-                return new CodeExecutionResult() {Errors = errorText};
+                return new CodeCompilationResult() {Errors = errorText};
             }
 
             // load this 'virtual' DLL so that we can use
             ms.Seek(0, SeekOrigin.Begin);
             Assembly assembly = Assembly.Load(ms.ToArray());
 
-            // create instance of the desired class and call the desired function
+            return new CodeCompilationResult() {Assembly = assembly};
+        }
 
+        public static object? Run(Assembly assembly, Type runnableType, object[]? creationParams,
+            object[]? executionParams)
+        {
             var typeToExecute = assembly
                 .GetTypes().FirstOrDefault(runnableType.IsAssignableFrom);
-            var obj = Activator.CreateInstance(typeToExecute);
+            var obj = Activator.CreateInstance(typeToExecute ??
+                                               throw new InvalidOperationException("No assignable types in assembly"),
+                creationParams);
 
             const BindingFlags flags = BindingFlags.Public | BindingFlags.FlattenHierarchy | BindingFlags.Instance;
             var methodToExecute = typeToExecute.GetMethods(flags).FirstOrDefault();
-
 
             var executionResult = runnableType.InvokeMember(methodToExecute.Name,
                 BindingFlags.Default | BindingFlags.InvokeMethod,
                 null,
                 obj,
-                parameters);
-            return new CodeExecutionResult() {Result = executionResult};
+                executionParams);
+            return executionResult;
         }
     }
 
-    public class CodeExecutionResult
+    public class CodeCompilationResult
     {
         public string? Errors { get; set; }
-        public object? Result { get; set; }
+        public Assembly? Assembly { get; set; }
     }
 }

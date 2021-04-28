@@ -36,19 +36,20 @@ namespace AvaloniaCodeRunner
             var codeText = this.FindControl<TextBox>("Code").Text;
             var results = this.FindControl<TextBox>("Results");
             var parameter = this.FindControl<TextBox>("Parameter");
-            
 
-            var executionResult = CodeRunner.RunCode(
-                string.IsNullOrEmpty(codeText) ? defaultCode : codeText,
-                typeof(IRunnable),
-                new object[] {parameter.Text});
-            if (!(executionResult.Errors is null))
+            var compilationResult = CodeRunner.Compile(string.IsNullOrEmpty(codeText) ? defaultCode : codeText, typeof(IRunnable));
+            
+            if (!(compilationResult.Errors is null))
             {
-                results.Text = executionResult.Errors;
+                results.Text = compilationResult.Errors;
             }
             else
             {
-                results.Text = (string) executionResult.Result!;
+                var executionResult = CodeRunner.Run(
+                    compilationResult.Assembly,
+                    typeof(IRunnable), null,
+                    new object[] {parameter.Text});
+                results.Text = (string) executionResult!;
             }
         }
     }
